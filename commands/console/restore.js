@@ -1,11 +1,13 @@
 import {SlashCommandBuilder} from "discord.js"
-
+import { config } from "dotenv";
+import { runcommand } from "../../function/runcommand.js";
 
 const command = {
 	cooldown: 2,
 	data: new SlashCommandBuilder()
     .setName('restore')
     .setDescription('Restore a players items on the server')
+    .setDefaultMemberPermissions('0')
     .addStringOption(option =>
 		option.setName('username')
 			.setDescription('The username of the player to be restored')
@@ -21,21 +23,22 @@ const command = {
 		option.setName('death_id')
 			.setDescription('The death id of the player')
             .setRequired(true)),
-    async autocomplete(interaction) {
-        const focusedValue = interaction.options.getFocused();
-        const choices = ['Player1', 'Player2', 'Player3', 'Player4']; // Replace with actual username choices
-        const filtered = choices.filter(choice => choice.toLowerCase().startsWith(focusedValue.toLowerCase()));
-        await interaction.respond(
-            filtered.map(choice => ({ name: choice, value: choice }))
-        );
-    },
     async execute(interaction){
+        config()
         const playerName = interaction.options.getString('username');
         const deathId = interaction.options.getString('death_id');
         const restoreType = interaction.options.getString('restore_type');
-        const command = `/restoreinventory ${playerName} ${deathId} ${restoreType}`
+        const namePattern = /^[a-zA-Z0-9_]{2,16}$/;
+        const idPattern = /^[a-zA-Z0-9-]+$/;
 
-        await interaction.reply({content: `Command executed: ${command}`, ephemeral: true });
+        if(namePattern.test(playerName) && idPattern.test(deathId) && interaction.user.id === process.env.OWNERID){
+            const command = `restoreinventory ${playerName} ${deathId} ${restoreType}`;
+            runcommand(command)
+            await interaction.reply({content: `Command executed: /${command}`, ephemeral: true });
+        }
+        else{
+            await interaction.reply({content: `Invalid name/death id or permissions`, ephemeral: true });
+        }
     },
 };
 
