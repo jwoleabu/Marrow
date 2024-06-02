@@ -7,8 +7,6 @@ import fs from 'fs';
 import path from 'path';
 config();
 
-
-// Convert __filename and __dirname from CommonJS to ES6
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -36,12 +34,10 @@ const loadCommands = async () => {
             }
         });
 
-        // Wait for all imports to complete for this folder
         await Promise.all(imports);
     }
 };
 
-// Construct and prepare an instance of the REST module
 let rest = new REST().setToken(process.env.TOKEN);
 
 
