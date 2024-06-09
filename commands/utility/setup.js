@@ -10,7 +10,7 @@ const command = {
         let output ='Curseforge: You can download the mod files attached below'
         try{
             const url = new URL(urlstring)
-            output += `\nMinecraft launcher: Install the correct forge version (currently working with ${process.env.SERVERVERSION}-forge${process.env.FORGEVERSION}) at ${urlstring}`
+            output += `\nMinecraft launcher: Install the correct forge version (currently working with ${process.env.SERVERVERSION}-forge${process.env.FORGEVERSION}) at ${urlstring}and add the mods from ${process.env.MODURL}`
             
         }
         catch(error){
